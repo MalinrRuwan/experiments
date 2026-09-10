@@ -1,0 +1,337 @@
+# ==============================================================================
+# Multi-language experiments repo
+# Organized by ecosystem. Uncomment anything you don't want ignored.
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# OS / system junk
+# ------------------------------------------------------------------------------
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+.AppleDouble
+.LSOverride
+Icon?
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+desktop.ini
+*~
+*.swp
+*.swo
+
+# ------------------------------------------------------------------------------
+# Editors / IDEs
+# ------------------------------------------------------------------------------
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+.fleet/
+*.sublime-workspace
+*.sublime-project
+.history/
+*.code-workspace
+
+# ------------------------------------------------------------------------------
+# Secrets / environment
+# ------------------------------------------------------------------------------
+.env
+.env.*
+!.env.example
+!.env*.sample
+*.pem
+*.key
+secrets/
+credentials.json
+service-account*.json
+
+# ------------------------------------------------------------------------------
+# Node.js / JavaScript / TypeScript
+# ------------------------------------------------------------------------------
+node_modules/
+bower_components/
+jspm_packages/
+.npm/
+.yarn/
+.pnp.*
+.pnp.js
+yarn-error.log*
+npm-debug.log*
+lerna-debug.log*
+coverage/
+.nyc_output/
+dist/
+build/
+.next/
+.nuxt/
+.output/
+.vercel/
+.netlify/
+.cache/
+.parcel-cache/
+.astro/
+.svelte-kit/
+storybook-static/
+*.tsbuildinfo
+.eslintcache
+.stylelintcache
+
+# ------------------------------------------------------------------------------
+# Python
+# ------------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+downloads/
+eggs/
+.eggs/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+.venv/
+venv/
+ENV/
+env/
+.python-version
+.pytest_cache/
+.tox/
+.nox/
+.coverage
+.coverage.*
+htmlcov/
+.cache/
+.ipynb_checkpoints/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.ruff_cache/
+.pytype/
+cython_debug/
+*.mo
+
+# ------------------------------------------------------------------------------
+# Rust
+# ------------------------------------------------------------------------------
+target/
+**/*.rs.bk
+*.pdb
+# Keep Cargo.lock checked in even for libraries in this repo
+
+# ------------------------------------------------------------------------------
+# Go
+# ------------------------------------------------------------------------------
+*.exe
+*.exe~
+*.dll
+*.dylib
+*.test
+*.out
+go.work
+go.work.sum
+vendor/
+
+# ------------------------------------------------------------------------------
+# Java / JVM (Gradle, Maven, Kotlin)
+# ------------------------------------------------------------------------------
+*.class
+*.jar
+*.war
+*.nar
+*.ear
+hs_err_pid*
+replay_pid*
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/**/build/
+!**/src/test/**/build/
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+.kotlin/
+.scala-build/
+.bloop/
+.metals/
+.bsp/
+.lein-*
+.nrepl-port
+
+# ------------------------------------------------------------------------------
+# C / C++ / CMake / Zig
+# ------------------------------------------------------------------------------
+*.o
+*.obj
+*.a
+*.lib
+*.lo
+*.la
+*.so.*
+*.dSYM/
+*.su
+*.idb
+*.mod*
+*.cmd
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+zig-cache/
+zig-out/
+.zig-cache/
+
+# ------------------------------------------------------------------------------
+# Swift / Objective-C / Xcode
+# ------------------------------------------------------------------------------
+*.xcuserstate
+xcuserdata/
+DerivedData/
+*.moved-aside
+*.hmap
+*.ipa
+*.dSYM.zip
+.swiftpm/
+.build/
+Packages/
+*.xcodeproj/xcuserdata/
+*.xcworkspace/xcuserdata/
+Pods/
+Carthage/Build/
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+
+# ------------------------------------------------------------------------------
+# Ruby
+# ------------------------------------------------------------------------------
+*.gem
+*.rbc
+/.bundle/
+/.yardoc
+/_yardoc/
+/coverage/
+/doc/
+/.rspec_status
+vendor/bundle/
+.bundle/
+.ruby-version
+
+# ------------------------------------------------------------------------------
+# PHP / Composer
+# ------------------------------------------------------------------------------
+/vendor/
+.phpunit.result.cache
+.php-cs-fixer.cache
+
+# ------------------------------------------------------------------------------
+# .NET / C#
+# ------------------------------------------------------------------------------
+bin/
+obj/
+*.user
+*.suo
+*.userprefs
+*.usertasks
+*.nupkg
+*.snupkg
+project.lock.json
+project.fragment.lock.json
+artifacts/
+.vs/
+packages/
+TestResults/
+
+# ------------------------------------------------------------------------------
+# Elixir / Erlang
+# ------------------------------------------------------------------------------
+/_build/
+/cover/
+/deps/
+/doc/
+/.fetch
+erl_crash.dump
+*.ez
+*.beam
+config/*.secret.exs
+.elixir_ls/
+
+# ------------------------------------------------------------------------------
+# Haskell / OCaml
+# ------------------------------------------------------------------------------
+dist/
+dist-newstyle/
+.cabal-sandbox/
+cabal.sandbox.config
+*.hi
+*.o
+.ghc.environment.*
+.ghci
+.stack-work/
+_esy/
+_obuild/
+_build/
+.merlin
+
+# ------------------------------------------------------------------------------
+# Databases / data dumps
+# ------------------------------------------------------------------------------
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
+*.mdb
+*.ldb
+*.sst
+dump.rdb
+*.rdb
+
+# ------------------------------------------------------------------------------
+# Logs / temp / coverage
+# ------------------------------------------------------------------------------
+logs/
+*.log
+!yarn-error.log
+tmp/
+temp/
+*.tmp
+*.bak
+*.orig
+*.rej
+coverage/
+*.lcov
+junit.xml
+test-results/
+
+# ------------------------------------------------------------------------------
+# Build/machine-local artifacts common to many languages
+# ------------------------------------------------------------------------------
+*.bin
+*.iso
+*.dmg
+*.app
