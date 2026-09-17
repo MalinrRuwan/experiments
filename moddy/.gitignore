@@ -1,0 +1,11 @@
+node_modules/
+dist/
+moddy
+
+# Secrets
+.env
+.env.local
+.env.*.local
+
+# Generated reports
+*.report.json

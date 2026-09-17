@@ -1,0 +1,35 @@
+{
+  "name": "moddy",
+  "version": "0.1.0",
+  "description": "Content moderation CLI powered by TypeSafe AI (Jev) and Effect",
+  "license": "MIT",
+  "bin": {
+    "moddy": "./src/cli.ts"
+  },
+  "type": "module",
+  "module": "src/cli.ts",
+  "scripts": {
+    "dev": "bun run src/cli.ts",
+    "start": "bun run src/cli.ts",
+    "moderate": "bun run src/cli.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test",
+    "check": "ultracite check",
+    "fix": "ultracite fix"
+  },
+  "dependencies": {
+    "@effect/platform-bun": "^4.0.0-rc.115",
+    "@typesafe-ai/sdk": "^0.6.0",
+    "effect": "rc"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "oxfmt": "^0.68.0",
+    "oxlint": "^1.83.0",
+    "typescript": "^7.0.2",
+    "ultracite": "7.12.0"
+  },
+  "engines": {
+    "bun": ">=1.2.0"
+  }
+}
