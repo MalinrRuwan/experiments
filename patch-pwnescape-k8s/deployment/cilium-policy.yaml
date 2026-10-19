@@ -1,0 +1,17 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: nginx-access-policy
+spec:
+  endpointSelector:
+    matchLabels:
+      app: nginx
+
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            role: allowed
+      toPorts:
+        - ports:
+            - port: "80"
+              protocol: TCP

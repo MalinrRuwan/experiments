@@ -1,0 +1,10 @@
+# Only send the binary the Dockerfile copies to the build context.
+*
+!Dockerfile
+!target
+target/*
+!target/aarch64-unknown-linux-musl
+target/aarch64-unknown-linux-musl/*
+!target/aarch64-unknown-linux-musl/release
+target/aarch64-unknown-linux-musl/release/*
+!target/aarch64-unknown-linux-musl/release/patch-pwnescape-k8s

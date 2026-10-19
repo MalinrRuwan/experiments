@@ -1,0 +1,23 @@
+# Test rig for patch-pwnescape-k8s: a pod that simulates a compromised
+# container probing the network channels used to pivot after (or while)
+# escaping. Normal cluster traffic works; node/metadata channels are dropped
+# by the TC guard and reported in the patch-pwnescape-k8s daemon logs.
+#
+# Try (node IPs: minikube -p cilium-lab ip / node status):
+#   kubectl exec -it escape-artist -- sh
+#     curl -m 3 http://192.168.49.2:10255  # kubelet read-only  -> dropped
+#     curl -m 3 -k https://192.168.49.2:6443  # apiserver direct -> dropped
+#     curl -m 3 http://169.254.169.254  # metadata -> dropped
+#     curl -m 3 http://nginx  # ClusterIP service via DNS -> works
+#     curl -m 3 http://10.244.1.106  # pod IP (nginx) -> works
+apiVersion: v1
+kind: Pod
+metadata:
+  name: escape-artist
+  labels:
+    app: escape-artist
+spec:
+  containers:
+    - name: tools
+      image: curlimages/curl:latest
+      command: ["sleep", "infinity"]

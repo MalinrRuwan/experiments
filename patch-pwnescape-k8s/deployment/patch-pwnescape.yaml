@@ -1,0 +1,71 @@
+# patch-pwnescape-k8s: eBPF guards for container escapes.
+#
+# - kprobe guard (CVE-2026-99999 "PwnEscape"): hooks skb_checksum_help() and
+#   detects a CHECKSUM_PARTIAL skb whose csum_start points inside the IPv4
+#   header - the deferred checksum write would mutate header bytes the kernel
+#   already validated (ihl 0x45 -> 0x4f), which ip_do_fragment() then re-reads.
+#   This is the deployed mitigation here.
+# - TC guard (optional): drops pod egress towards escape/pivot channels (node
+#   subnet, link-local metadata, host loopback). Disabled in this manifest
+#   with --no-tc-guard; re-enable by dropping that flag and restoring the
+#   --mode/--deny-cidr args.
+#
+# Notes:
+# - hostNetwork is required: the kprobe attaches to the host kernel; the TC
+#   guard (when enabled) must see and attach to the host's pod links.
+# - privileged/Unconfined is required to load BPF programs. Attaching a kprobe
+#   needs CAP_PERFMON/CAP_SYS_ADMIN; a least-privilege profile (CAP_BPF,
+#   CAP_PERFMON, CAP_NET_ADMIN) is a hardening TODO.
+# - Cilium coexistence (TC guard only): on kernels >= 6.6 both Cilium and this
+#   guard attach via TCX links, the guard first; pass-through returns
+#   TC_ACT_UNSPEC so Cilium's from-container program still runs.
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: patch-pwnescape-k8s
+  namespace: kube-system
+  labels:
+    k8s-app: patch-pwnescape-k8s
+spec:
+  selector:
+    matchLabels:
+      k8s-app: patch-pwnescape-k8s
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        k8s-app: patch-pwnescape-k8s
+    spec:
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      tolerations:
+        - operator: Exists
+      terminationGracePeriodSeconds: 5
+      containers:
+        - name: patch-pwnescape
+          image: localhost/patch-pwnescape-k8s:latest
+          imagePullPolicy: Never
+          # kprobe-mode=enforce: report the trigger and SIGKILL the sending
+          # task when the completion runs in its process context. Softirq
+          # (forwarded/vhost) completions are reported but not killed - killing
+          # the interrupted task there would hit an innocent process. Set
+          # --kprobe-mode=observe to make the guard report-only.
+          args:
+            - "--no-tc-guard"
+            - "--kprobe-mode=enforce"
+          securityContext:
+            privileged: true
+            seccompProfile:
+              type: Unconfined
+          env:
+            - name: RUST_LOG
+              value: info
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              memory: 128Mi
