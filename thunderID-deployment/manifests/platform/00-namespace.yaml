@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: production
+  labels:
+    # Sidecars are enabled per workload so CloudNativePG pods stay unmeshed.
+    pod-security.kubernetes.io/audit: restricted
+    pod-security.kubernetes.io/warn: restricted

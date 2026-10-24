@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+export K8S_MINOR="${kubernetes_minor}"
+
+# The bootstrap script is embedded so a fresh node needs no SSH access.
+bash -s -- "${hostname}" <<'BOOTSTRAP'
+${bootstrap}
+BOOTSTRAP

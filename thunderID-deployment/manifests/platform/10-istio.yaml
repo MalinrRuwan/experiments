@@ -1,0 +1,75 @@
+apiVersion: security.istio.io/v1
+kind: PeerAuthentication
+metadata:
+  name: default
+  namespace: production
+spec:
+  mtls:
+    mode: STRICT
+---
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: auth
+  namespace: production
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      # The ALB is the only path to NodePort 30080 (see the node security
+      # group), so a wildcard host keeps ALB health checks working.
+      hosts:
+        - "*"
+---
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: auth
+  namespace: production
+spec:
+  hosts:
+    - "*"
+  gateways:
+    - auth
+  http:
+    - timeout: 15s
+      retries:
+        attempts: 2
+        perTryTimeout: 5s
+      route:
+        - destination:
+            host: thunderid-service.production.svc.cluster.local
+            port:
+              number: 8090
+---
+# Deny all sidecar traffic in the namespace, then allow only the edge path.
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: deny-all
+  namespace: production
+spec: {}
+---
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-ingress-to-auth
+  namespace: production
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: thunderid
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            principals:
+              - cluster.local/ns/istio-ingress/sa/istio-ingressgateway
+      to:
+        - operation:
+            ports:
+              - "8090"

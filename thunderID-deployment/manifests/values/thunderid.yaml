@@ -1,0 +1,72 @@
+configuration:
+  server:
+    publicUrl: "https://auth-test.malindhamsara.dev"
+    httpOnly: true
+    port: 8090
+  passkey:
+    allowedOrigins:
+      - "https://auth-test.malindhamsara.dev"
+
+  database:
+    config:
+      type: postgres
+      postgres: &db
+        hostname: "auth-db-rw.production.svc.cluster.local"
+        port: "5432"
+        name: "configdb"
+        username: "auth"
+        passwordRef:
+          name: auth-db-app
+          key: password
+        sslmode: "require"
+    entity:
+      type: postgres
+      postgres:
+        <<: *db
+        name: "entitydb"
+    runtime_persistent:
+      type: postgres
+      postgres:
+        <<: *db
+        name: "runtime_persistent"
+    runtime_transient:
+      type: postgres
+      postgres:
+        <<: *db
+        name: "runtime_transient"
+
+deployment:
+  replicaCount: 1
+  image:
+    registry: ghcr.io/thunder-id
+    repository: thunderid
+    tag: "1.0.1"
+  container:
+    port: 8090
+
+service:
+  port: 8090
+
+ingress:
+  enabled: false
+
+hpa:
+  enabled: false
+
+pdb:
+  minAvailable: "0"
+
+certs:
+  persistence:
+    storageClass: local-path
+
+secrets:
+  persistence:
+    storageClass: local-path
+
+setup:
+  enabled: true
+  preserveJob: true
+  debug: true
+  admin:
+    username: admin

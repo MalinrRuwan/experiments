@@ -1,0 +1,107 @@
+# Namespace-scoped default deny. Cilium policies are additive, so the
+# policies below reopen only DNS, the auth path, replication and S3 backups.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: default-deny
+  namespace: production
+spec:
+  endpointSelector: {}
+  ingress: []
+  egress: []
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-dns
+  namespace: production
+spec:
+  endpointSelector: {}
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: auth
+  namespace: production
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: thunderid
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: istio-ingress
+            app: istio-ingressgateway
+      toPorts:
+        - ports:
+            - port: "8090"
+              protocol: TCP
+    # Kubelet probes and the sidecar's probe rewrite.
+    - fromEntities:
+        - host
+      toPorts:
+        - ports:
+            - port: "8090"
+              protocol: TCP
+            - port: "15020"
+              protocol: TCP
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            cnpg.io/cluster: auth-db
+      toPorts:
+        - ports:
+            - port: "5432"
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: istio-system
+            app: istiod
+      toPorts:
+        - ports:
+            - port: "15012"
+              protocol: TCP
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: auth-db
+  namespace: production
+spec:
+  endpointSelector:
+    matchLabels:
+      cnpg.io/cluster: auth-db
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: thunderid
+      toPorts:
+        - ports:
+            - port: "5432"
+              protocol: TCP
+    - fromEndpoints:
+        - matchLabels:
+            cnpg.io/cluster: auth-db
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            cnpg.io/cluster: auth-db
+    - toEntities:
+        - kube-apiserver
+    - toFQDNs:
+        - matchPattern: "*.amazonaws.com"
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP

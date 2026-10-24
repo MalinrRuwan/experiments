@@ -1,0 +1,29 @@
+replicaCount: 2
+
+# Match the selector used by the Istio Gateway resource.
+labels:
+  app: istio-ingressgateway
+  istio: ingressgateway
+
+serviceAccount:
+  create: true
+  name: istio-ingressgateway
+
+autoscaling:
+  enabled: false
+
+service:
+  type: NodePort
+  ports:
+    - name: status-port
+      port: 15021
+      targetPort: 15021
+      protocol: TCP
+    - name: http2
+      port: 80
+      targetPort: 80
+      protocol: TCP
+      nodePort: 30080
+
+nodeSelector:
+  role: worker

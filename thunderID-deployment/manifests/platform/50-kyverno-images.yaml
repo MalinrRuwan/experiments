@@ -1,0 +1,36 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: verify-auth-images
+spec:
+  validationFailureAction: Audit
+  background: false
+  rules:
+    - name: verify-signature-and-sbom
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+              namespaces:
+                - production
+      verifyImages:
+        - imageReferences:
+            - "ghcr.io/thunder-id/*"
+          attestors:
+            - entries:
+                - keyless:
+                    # Change this to the exact workflow that signs releases.
+                    subject: "https://github.com/thunder-id/thunderid/.github/workflows/release.yml@refs/heads/main"
+                    issuer: "https://token.actions.githubusercontent.com"
+                    rekor:
+                      url: https://rekor.sigstore.dev
+          attestations:
+            - predicateType: https://spdx.dev/Document
+              attestors:
+                - entries:
+                    - keyless:
+                        subject: "https://github.com/thunder-id/thunderid/.github/workflows/release.yml@refs/heads/main"
+                        issuer: "https://token.actions.githubusercontent.com"
+                        rekor:
+                          url: https://rekor.sigstore.dev

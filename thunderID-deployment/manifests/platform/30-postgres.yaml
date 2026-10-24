@@ -1,0 +1,37 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: auth-db
+  namespace: production
+spec:
+  instances: 2
+  imageName: ghcr.io/cloudnative-pg/postgresql:16.10-system-trixie
+
+  # One synchronous standby; failover keeps zero transaction loss.
+  minSyncReplicas: 1
+  maxSyncReplicas: 1
+
+  storage:
+    size: 20Gi
+    # Lab default: local-path on the data nodes' gp3 root disks.
+    # Use an EBS CSI gp3 StorageClass for production.
+    storageClass: local-path
+
+  bootstrap:
+    initdb:
+      database: auth
+      owner: auth
+      secret:
+        name: auth-db-app
+
+  postgresql:
+    parameters:
+      ssl_min_protocol_version: "TLSv1.3"
+
+  affinity:
+    nodeSelector:
+      role: data
+    podAntiAffinityType: required
+
+  monitoring:
+    enablePodMonitor: false
